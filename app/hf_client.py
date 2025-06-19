@@ -1,4 +1,5 @@
 import os
+import subprocess
 from huggingface_hub import InferenceClient, hf_api, HfApi # type: ignore
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel # type: ignore
@@ -33,11 +34,24 @@ async def generate_entry(user_id: str, raw_block: str) -> str:
 
 def train_adapter(user_id: str, samples: list[str]) -> str:
     """
-    1) Create or clone HF adapter repo
-    2) Fine-tune LoRA adapters on `samples` locally
-    3) Push adapter weights back to HF under repo_id
+    1) Write `samples` to a temp file
+    2) Invoke train_adapter.py
+    Returns: the HF repo_id where the adapter was pushed
     """
-    from datasets import Dataset # type: ignore
-    dataset = Dataset.from_dict({"text": samples})
-    trained_repo = push_lora_adapter(BASE_MODEL, dataset, user_id)
-    return trained_repo
+    tmp_dir = os.path.join("data", user_id)
+    os.makedirs(tmp_dir, exist_ok=True)
+    samples_file = os.path.join(tmp_dir, "voice_samples.txt")
+
+    with open(samples_file, 'w') as f:
+        f.write("\n".join(samples))
+    
+    repo_id = f"{HF_ORG}/memory-capsule-adapter-{user_id}"
+    cmd = [
+        "python", "train_adapter.py",
+        "--user-id", user_id,
+        "--samples-file", samples_file,
+        "--repo-id", repo_id,
+    ]
+
+    subprocess.run(cmd, check=True)
+    return repo_id

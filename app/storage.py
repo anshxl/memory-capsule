@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import faiss # type: ignore
 import numpy as np
-from huggingface_hub import InferenceApi # type: ignore
+from huggingface_hub import InferenceClient # type: ignore
 
 # Root Data Directory
 DATA_DIR = os.getenv("DATA_DIR", "./data")
@@ -14,7 +14,7 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
 # Inference API
-embed_api = InferenceApi(repo_id=EMBED_MODEL, token=HF_TOKEN, task="feature-extraction")
+embed_api = InferenceClient(model=EMBED_MODEL, token=HF_TOKEN)
 
 # Milestones for badges
 _BADGE_MILESTONES = {

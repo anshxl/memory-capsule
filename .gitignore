@@ -1,2 +1,11 @@
 # env file
 .env
+
+# python cache
+__pycache__/
+
+# python bytecode
+*.py[cod]
+
+# distribution / packaging
+.Python

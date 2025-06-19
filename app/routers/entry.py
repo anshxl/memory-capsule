@@ -1,6 +1,6 @@
 from typing import Optional, List, Literal
 from fastapi import APIRouter, HTTPException # type: ignore
-from pydantic import BaseModel, root_validator # type: ignore
+from pydantic import BaseModel, model_validator # type: ignore
 from app.storage import save_entry  # type: ignore
 from app.hf_client import generate_entry # type: ignore
 
@@ -26,7 +26,7 @@ class EntryRequest(BaseModel):
     answers: Optional[List[str]] = None # for AI mode
     content: Optional[str] = None # for manual mode
     
-    @root_validator()
+    @model_validator(mode='after')
     def check_required_fields(cls, values):
         mode = values.get('mode')
         answers = values.get('answers')
