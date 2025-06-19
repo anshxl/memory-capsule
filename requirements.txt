@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+huggingface-hub
+transformers
+peft
+torch     # CPU or GPU build as needed
+datasets  # for adapter training
+faiss-cpu # or faiss-gpu, for RAG
+
