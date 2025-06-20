@@ -9,3 +9,6 @@ __pycache__/
 
 # distribution / packaging
 .Python
+
+# txt files
+*.txt

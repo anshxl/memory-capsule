@@ -46,7 +46,7 @@ async def create_entry(req: EntryRequest):
         raw_block = "\n\n".join(f"{q}\n{a}" for q, a in zip(QUESTIONS, req.answers))
 
         try:
-            ai_text = await generate_entry(raw_block, req.user_id)
+            ai_text = await generate_entry(req.user_id, raw_block)
         except Exception:
             ai_text = raw_block
         entry_id, text, *_ = save_entry(req.user_id, ai_text)
