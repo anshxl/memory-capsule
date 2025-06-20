@@ -26,35 +26,30 @@ class EntryRequest(BaseModel):
     answers: Optional[List[str]] = None # for AI mode
     content: Optional[str] = None # for manual mode
     
-    @model_validator(mode='after')
-    def check_required_fields(cls, values):
-        mode = values.get('mode')
-        answers = values.get('answers')
-        content = values.get('content')
-
-        if mode == "ai":
-            if not answers or len(answers) != len(QUESTIONS):
-                raise ValueError(f"AI mode requires exactly {len(QUESTIONS)} answers.")
-        else:
-            if not content or not content.strip():
-                raise ValueError("Manual mode requires content to be provided.")
-        return values
-
 class EntryResponse(BaseModel):
     entry_id: str
     text: str
 
 @router.post("", response_model=EntryResponse)
-async def create_entry(req: EntryResponse):
+async def create_entry(req: EntryRequest):
     # Manual mode: save directly
     if req.mode == "manual":
+        if not req.content or not req.content.strip():
+            raise HTTPException(status_code=400, detail="Content cannot be empty.")
         entry_text = req.content.strip()
-        entry_id, _ = save_entry(req.user_id, entry_text)
+        entry_id, text, *_ = save_entry(req.user_id, entry_text)
         return {"entry_id": entry_id, "text": entry_text}
     # AI mode: generate entry from answers
-    raw_block = "\n\n".join(f"{q}\n{a}" for q, a in zip(QUESTIONS, req.answers))
+    if req.mode == "ai":
+        if not req.answers or len(req.answers) != len(QUESTIONS):
+            raise HTTPException(status_code=400, detail=f"AI mode requires exactly {len(QUESTIONS)} answers.")
+        raw_block = "\n\n".join(f"{q}\n{a}" for q, a in zip(QUESTIONS, req.answers))
 
-    ai_text = await generate_entry(raw_block, req.user_id)
+        try:
+            ai_text = await generate_entry(raw_block, req.user_id)
+        except Exception:
+            ai_text = raw_block
+        entry_id, text, *_ = save_entry(req.user_id, ai_text)
+        return {"entry_id": entry_id, "text": text}
 
-    entry_id, _ = save_entry(req.user_id, ai_text)
-    return {"entry_id": entry_id, "text": ai_text}
+    raise HTTPException(status_code=400, detail="Invalid mode. Use 'manual' or 'ai'.")

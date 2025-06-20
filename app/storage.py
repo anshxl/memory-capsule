@@ -120,8 +120,11 @@ def _embed_text(text: str) -> np.ndarray:
     """
     Call HF InferenceApi to get a 1D float32 embedding for `text`.
     """
-    result = embed_api(text)
-    vec = np.array(result[0], dtype=np.float32)
+    try:
+        result = embed_api.feature_extraction(inputs=text)
+        vec = np.array(result[0], dtype="float32")
+    except Exception:
+        vec = np.zeros(384, dtype="float32")  # Fallback to zero vector if embedding fails
     return vec
 
 # Entry ID Generation
