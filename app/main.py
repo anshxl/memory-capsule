@@ -1,5 +1,5 @@
 import os
-os.environ("KMP_DUPLICATE_LIB_OK") = "True"
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 from fastapi import FastAPI # type: ignore
 from dotenv import load_dotenv # type: ignore

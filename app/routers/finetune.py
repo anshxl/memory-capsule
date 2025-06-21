@@ -12,17 +12,8 @@ class FinetuneResponse(BaseModel):
     status: str
 
 @router.post("/{user_id}", response_model=FinetuneResponse)
-async def finetune(user_id: str, req: FinetuneRequest):
+def finetune(user_id: str, req: FinetuneRequest):
     """
-    Kick off LoRA fine-tuning for a given user_id.
-    Returns the HF adapter repo and a status message.
+    Placeholder endpoint for fine-tuning.
     """
-    if not req.samples or len(req.samples) < 10:
-        raise HTTPException(status_code=400, detail="At least 10 samples are required for fine-tuning.")
-    
-    try:
-        repo_id = train_adapter(user_id, req.samples)
-    except Exception as e:
-        raise HTTPException(500, f"Adapter training failed: {e}")
-    
-    return {"adapter_repo": repo_id, "status": "completed"}
+    return {"message": "Fine-tuning coming soon!", "status": "unavailable"}
