@@ -34,7 +34,7 @@
 
 ## Directory Structure
 
-```
+````
 
 .
 ├── .streamlit/
@@ -66,7 +66,7 @@
    cd memory-capsule
    python -m venv .venv && source .venv/bin/activate
    pip install -r requirements.txt
-````
+   ```
 
 2. **Configure**
    Copy `.env.example` → `.env` and fill in:
