@@ -12,3 +12,6 @@ __pycache__/
 
 # txt files
 *.txt
+
+# test cache
+.pytest_cache/
