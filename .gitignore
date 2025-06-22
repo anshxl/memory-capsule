@@ -15,3 +15,5 @@ __pycache__/
 
 # test cache
 .pytest_cache/
+
+train_adapter.py
