@@ -1,4 +1,3 @@
-```markdown
 # Memory Capsule
 
 **A personal journaling assistant powered by LLMs and RAG**
