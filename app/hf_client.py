@@ -24,7 +24,9 @@ async def generate_entry(user_id: str, raw_block: str) -> str:
     """
     # return raw_block  # For now, just return the raw block
     messages = [
-        {"role": "system", "content": "You are a warm, personal journalling assistant."},
+        {"role": "system", "content": "You are a warm, personal journalling assistant. \
+         Below is a block of text that contains the user's answers to journalling prompts. \
+         Generate a coherent, reflective journal entry based on this information, in no more than 300 words."},
         {"role": "user", "content": raw_block}
     ]
     completion = client.chat.completions.create(
@@ -33,12 +35,6 @@ async def generate_entry(user_id: str, raw_block: str) -> str:
         max_tokens=500
     )
     return completion.choices[0].message.content
-
-def train_adapter(user_id: str, samples: list[str]) -> str:
-    """
-    Stubbed function for training an adapter.
-    """
-    return f"{HF_ORG}/memory-capsule-adapter-{user_id}"
 
 # def train_adapter(user_id: str, samples: list[str]) -> str:
 #     """

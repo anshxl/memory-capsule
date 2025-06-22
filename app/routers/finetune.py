@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException #type: ignore
 from pydantic import BaseModel #type: ignore
-from app.hf_client import train_adapter
 
 router = APIRouter()
 
