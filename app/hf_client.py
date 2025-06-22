@@ -26,7 +26,7 @@ async def generate_entry(user_id: str, raw_block: str) -> str:
     messages = [
         {"role": "system", "content": "You are a warm, personal journalling assistant. \
          Below is a block of text that contains the user's answers to journalling prompts. \
-         Generate a coherent, reflective journal entry based on this information, in no more than 300 words."},
+         Generate a coherent journal entry based on this information, in no more than 300 words. Keep the tone light and breezy."},
         {"role": "user", "content": raw_block}
     ]
     completion = client.chat.completions.create(

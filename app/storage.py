@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 import faiss # type: ignore
 import numpy as np
-#from huggingface_hub import InferenceClient # type: ignore
+from huggingface_hub import InferenceClient # type: ignore
 
 # Root Data Directory
 DATA_DIR = os.getenv("DATA_DIR", "./data")
@@ -14,7 +14,7 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
 # Inference API
-#embed_api = InferenceClient(model=EMBED_MODEL, token=HF_TOKEN)
+embed_api = InferenceClient(model=EMBED_MODEL, token=HF_TOKEN)
 
 # Milestones for badges
 _BADGE_MILESTONES = {
@@ -120,14 +120,11 @@ def _embed_text(text: str) -> np.ndarray:
     """
     Call HF InferenceApi to get a 1D float32 embedding for `text`.
     """
-    # try:
-    #     result = embed_api.feature_extraction(inputs=text)
-    #     vec = np.array(result[0], dtype="float32")
-    # except Exception:
-    #     vec = np.zeros(384, dtype="float32")  # Fallback to zero vector if embedding fails
-    # return vec
-    # Stubbed version
-    return np.zeros(384, dtype="float32")  # Replace with actual embedding logic
+    try:
+        result = embed_api.feature_extraction(text=text)
+    except Exception:
+        result = np.zeros(384, dtype="float32")  # Fallback to zero vector if embedding fails
+    return result
 
 # Entry ID Generation
 def _generate_entry_id() -> str:
