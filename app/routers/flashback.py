@@ -60,16 +60,18 @@ def flashback(
 
     # Retrieve the actual entries
     results = []
-    for idx in I[0]:
+    for dist, idx in zip(D[0], I[0]):
         entry_id = id_map.get(str(int(idx)))
         if not entry_id:
             continue
-        path = os.path.join(_entries_dir, f"{entry_id}.txt")
+        path = os.path.join(entries_dir, f"{entry_id}.txt")
         try:
-            with open(path, "r") as f:
-                content = f.read()
+            content = open(path, "r").read()
         except FileNotFoundError:
             content = ""
-        results.append({"entry_id": entry_id, "content": content})
-
+        results.append({
+            "entry_id": entry_id,
+            "content":  content,
+            "score":    float(dist)
+        })
     return results

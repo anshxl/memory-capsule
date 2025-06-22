@@ -129,12 +129,12 @@ if "answers" not in st.session_state:
 # Sidebar for mode and user_id
 with st.sidebar:
     st.header("Settings")
-    st.session_state.mode = st.radio("Mode", ["Hand-written", "AI-assisted"])
+    st.session_state.mode = st.radio("Mode", ["manual", "ai"])
     st.session_state.user_id = st.text_input("User ID", value="testuser")
 
 st.header("New Entry")
 
-if st.session_state.mode == "Hand-written":
+if st.session_state.mode == "manual":
     st.session_state.content = st.text_area(
         "Write your journal entry:", 
         value=st.session_state.content, 
@@ -153,7 +153,7 @@ else:
 # Submit button
 if st.button("Save Entry"):
     payload = {"mode": st.session_state.mode, "user_id": st.session_state.user_id}
-    if st.session_state.mode == "Hand-written":
+    if st.session_state.mode == "manual":
         text = st.session_state.content.strip()
         if not text:
             st.error("Please write something before saving.")
@@ -177,6 +177,13 @@ if st.button("Save Entry"):
             st.session_state.content = ""
             for q in QUESTIONS:
                 st.session_state.answers[q] = ""
+        except Exception as e:
+            # Show server-side validation errors
+            try:
+                detail = resp.json()
+            except Exception:
+                detail = resp.text
+            st.error(f"Server returned {resp.status_code}: {detail}")
         except Exception as e:
             st.error(f"Failed to save entry: {e}")
         
